@@ -36,13 +36,11 @@ app.layout = html.Div([
 
     html.Div([
         html.Label("Год:"),
-        dcc.Slider(
-            min=min(years),
-            max=max(years),
-            step=5,
+        dcc.Dropdown(
+            options=[{'label': str(year), 'value': year} for year in years],
             value=2007,
-            marks={str(year): str(year) for year in years},
-            id='year-slider'
+            id='year-dropdown',
+            clearable=False
         )
     ], style={'margin': '20px'}),
 
@@ -68,7 +66,7 @@ def update_line_graph(countries, metric):
 # пузырьковая диаграмма
 @app.callback(
     Output('bubble-chart', 'figure'),
-    Input('year-slider', 'value'),
+    Input('year-dropdown', 'value'),
     Input('metric-dropdown', 'value')
 )
 def update_bubble(year, metric):
@@ -82,7 +80,7 @@ def update_bubble(year, metric):
 # топ-15 стран по населению
 @app.callback(
     Output('top15-population', 'figure'),
-    Input('year-slider', 'value')
+    Input('year-dropdown', 'value')
 )
 def update_top15(year):
     dff = df[df['year'] == year].nlargest(15, 'pop')
@@ -93,7 +91,7 @@ def update_top15(year):
 # круговая диаграмма по континентам
 @app.callback(
     Output('continent-pie', 'figure'),
-    Input('year-slider', 'value')
+    Input('year-dropdown', 'value')
 )
 def update_pie(year):
     dff = df[df['year'] == year]
